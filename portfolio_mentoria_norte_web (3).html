@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mentoria Norte · Artur Neto</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --ink:       #141210;
+  --ink-soft:  #1E1B18;
+  --ink-mid:   #2C2823;
+  --orange:    #F47920;
+  --orange-dk: #C9610A;
+  --orange-lt: rgba(244,121,32,.08);
+  --orange-md: rgba(244,121,32,.18);
+  --cream:     #F5F0E8;
+  --warm-gray: #9A9189;
+  --light:     #EDE8DF;
+  --white:     #FDFAF6;
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--cream);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── Custom cursor ──────────────────────────────────────────── */
+.cursor {
+  position: fixed; z-index: 9999; pointer-events: none;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--orange);
+  transform: translate(-50%,-50%);
+  transition: transform .15s ease, width .3s ease, height .3s ease, opacity .3s;
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  position: fixed; z-index: 9998; pointer-events: none;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid rgba(244,121,32,.4);
+  transform: translate(-50%,-50%);
+  transition: transform .4s cubic-bezier(.16,1,.3,1), width .4s, height .4s, opacity .4s;
+}
+body:hover .cursor { opacity: 1; }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 2px; }
+
+/* ── Nav ────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 22px 6%;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: background .5s, padding .4s;
+}
+nav.scrolled {
+  background: rgba(20,18,16,.92);
+  backdrop-filter: blur(12px);
+  padding: 14px 6%;
+  border-bottom: 1px solid rgba(244,121,32,.12);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 600; letter-spacing: .5px;
+  color: var(--white);
+  text-decoration: none;
+  opacity: 0; animation: fadeIn .8s ease .3s forwards;
+}
+.nav-logo span { color: var(--orange); }
+.nav-links {
+  display: flex; gap: 32px; list-style: none;
+  opacity: 0; animation: fadeIn .8s ease .5s forwards;
+}
+.nav-links a {
+  font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--warm-gray);
+  text-decoration: none; transition: color .2s;
+}
+.nav-links a:hover { color: var(--orange); }
+
+/* ── ABERTURA ───────────────────────────────────────────────── */
+#abertura {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 6% 80px;
+  position: relative; overflow: hidden;
+}
+
+/* Grain texture */
+#abertura::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Radial glow */
+#abertura::after {
+  content: '';
+  position: absolute; top: -20%; right: -10%;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(244,121,32,.10) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+.abertura-inner { position: relative; z-index: 1; max-width: 900px; padding-bottom: 120px; }
+
+.abertura-pergunta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 36px;
+  opacity: 0; animation: slideUp .9s ease .2s forwards;
+}
+
+.abertura-headline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(52px, 7.5vw, 96px);
+  font-weight: 300; line-height: 1.0; letter-spacing: -2px;
+  color: var(--white); margin-bottom: 12px;
+}
+.abertura-headline .line1 {
+  display: block; opacity: 0;
+  animation: slideUp 1s cubic-bezier(.16,1,.3,1) .35s forwards;
+}
+.abertura-headline .line2 {
+  display: block; font-style: italic; color: var(--orange);
+  opacity: 0; animation: slideUp 1s cubic-bezier(.16,1,.3,1) .5s forwards;
+}
+.abertura-headline .line3 {
+  display: block; opacity: 0;
+  animation: slideUp 1s cubic-bezier(.16,1,.3,1) .65s forwards;
+}
+
+.abertura-desc {
+  max-width: 560px; margin-top: 32px;
+  font-size: 16px; font-weight: 300; color: rgba(245,240,232,.65);
+  line-height: 1.85;
+  opacity: 0; animation: slideUp .9s ease .9s forwards;
+}
+
+.abertura-cta {
+  display: flex; gap: 16px; margin-top: 52px; flex-wrap: wrap;
+  opacity: 0; animation: slideUp .9s ease 1.1s forwards;
+}
+.btn-main {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--orange); color: var(--white);
+  padding: 14px 28px; border-radius: 3px;
+  font-size: 13px; font-weight: 600; letter-spacing: .5px;
+  text-decoration: none; transition: all .25s;
+  border: none; cursor: none;
+}
+.btn-main:hover { background: var(--orange-dk); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(244,121,32,.35); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: transparent; color: var(--cream);
+  padding: 14px 28px; border-radius: 3px;
+  font-size: 13px; font-weight: 500; letter-spacing: .5px;
+  text-decoration: none; border: 1px solid rgba(245,240,232,.2);
+  transition: all .25s; cursor: none;
+}
+.btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+
+/* Stats bar */
+.abertura-stats {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(245,240,232,.07);
+  opacity: 0; animation: fadeIn 1s ease 1.4s forwards;
+  z-index: 1;
+}
+.a-stat {
+  padding: 24px 6%; border-right: 1px solid rgba(245,240,232,.07);
+}
+.a-stat:last-child { border-right: none; }
+.a-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px; font-weight: 600; color: var(--orange); line-height: 1;
+  margin-bottom: 4px;
+}
+.a-stat-label { font-size: 11px; color: var(--warm-gray); letter-spacing: .5px; line-height: 1.4; }
+
+/* ── Seções ─────────────────────────────────────────────────── */
+section { padding: 100px 6%; }
+
+.s-label {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 14px;
+}
+.s-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(34px, 4.5vw, 54px);
+  font-weight: 400; line-height: 1.1; letter-spacing: -.5px;
+  color: var(--white); margin-bottom: 48px;
+}
+.s-title em { font-style: italic; color: var(--orange); }
+.s-title.light { color: var(--ink); }
+.s-title.light em { color: var(--orange-dk); }
+
+hr.accent {
+  border: none; height: 1.5px;
+  background: linear-gradient(90deg, var(--orange), transparent);
+  margin-bottom: 40px;
+}
+
+/* ── SOBRE ──────────────────────────────────────────────────── */
+#sobre { background: var(--ink-soft); }
+
+.sobre-grid {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 80px;
+  align-items: start;
+}
+.sobre-text p {
+  font-size: 16px; font-weight: 300; color: rgba(245,240,232,.72);
+  line-height: 1.9; margin-bottom: 20px;
+}
+.sobre-text p strong { color: var(--white); font-weight: 600; }
+
+.sobre-nome {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 5vw, 64px); font-weight: 600;
+  color: var(--white); line-height: 1; letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+.sobre-cargo {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 32px;
+}
+
+.filosofia-list {
+  list-style: none; display: flex; flex-direction: column; gap: 14px;
+}
+.filosofia-list li {
+  display: flex; align-items: flex-start; gap: 14px;
+  font-size: 14px; color: rgba(245,240,232,.7); line-height: 1.7;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(245,240,232,.06);
+}
+.filosofia-list li:last-child { border-bottom: none; padding-bottom: 0; }
+.fi-arrow { color: var(--orange); font-size: 13px; margin-top: 2px; flex-shrink: 0; }
+
+/* ── PROPOSTA ───────────────────────────────────────────────── */
+#proposta { background: var(--ink); }
+
+.proposta-intro {
+  max-width: 680px; font-size: 17px; font-weight: 300;
+  color: rgba(245,240,232,.65); line-height: 1.85; margin-bottom: 60px;
+}
+.proposta-intro strong { color: var(--white); font-weight: 600; }
+
+.proposta-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  margin-bottom: 40px;
+}
+.p-card {
+  background: var(--ink-soft);
+  padding: 44px 36px;
+  position: relative; overflow: hidden;
+  transition: background .3s;
+}
+.p-card:hover { background: var(--ink-mid); }
+.p-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--orange);
+  transform: scaleX(0); transform-origin: left; transition: transform .4s ease;
+}
+.p-card:hover::before { transform: scaleX(1); }
+
+.p-card-icon {
+  font-size: 32px; margin-bottom: 20px; display: block;
+  transition: transform .3s;
+}
+.p-card:hover .p-card-icon { transform: scale(1.1); }
+
+.p-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 600; color: var(--white);
+  margin-bottom: 12px; line-height: 1.2;
+}
+.p-card-desc {
+  font-size: 14px; color: rgba(245,240,232,.55); line-height: 1.8; margin-bottom: 24px;
+}
+.p-card-list {
+  list-style: none; display: flex; flex-direction: column; gap: 8px;
+}
+.p-card-list li {
+  font-size: 13.5px; color: rgba(245,240,232,.65);
+  display: flex; align-items: flex-start; gap: 10px; line-height: 1.6;
+}
+.p-card-list li::before { content: '→'; color: var(--orange); flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+
+.diferencial-box {
+  background: var(--orange);
+  padding: 36px 44px; text-align: center;
+}
+.diferencial-box p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(18px, 2.5vw, 24px); font-weight: 600;
+  color: var(--white); line-height: 1.6;
+}
+
+/* ── MÉTODO ─────────────────────────────────────────────────── */
+#metodo { background: var(--white); }
+#metodo .s-title { color: var(--ink); }
+#metodo .s-title em { color: var(--orange-dk); }
+#metodo .s-label { color: var(--orange-dk); }
+#metodo hr.accent { background: linear-gradient(90deg, var(--orange-dk), transparent); }
+
+.fases-track {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 2px; margin-bottom: 56px;
+}
+.fase-item {
+  background: var(--light); padding: 24px 16px;
+  text-align: center; position: relative;
+  transition: background .25s, transform .25s;
+  cursor: default;
+}
+.fase-item:hover { background: var(--cream); transform: translateY(-3px); }
+.fase-item.ativa { background: var(--ink); }
+.fase-item.ativa:hover { background: var(--ink-soft); }
+
+.fase-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 600;
+  color: rgba(20,18,16,.2); line-height: 1; margin-bottom: 6px;
+  transition: color .25s;
+}
+.fase-item:hover .fase-num { color: var(--orange-dk); }
+.fase-item.ativa .fase-num { color: var(--orange); }
+
+.fase-name {
+  font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+  text-transform: uppercase; color: rgba(20,18,16,.45); line-height: 1.3;
+}
+.fase-item.ativa .fase-name { color: rgba(245,240,232,.7); }
+
+.fase-desc {
+  font-size: 11.5px; color: rgba(20,18,16,.5);
+  line-height: 1.6; margin-top: 8px;
+}
+.fase-item.ativa .fase-desc { color: rgba(245,240,232,.5); }
+
+.fase-badge {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--orange); color: white;
+  font-size: 8px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 2px; white-space: nowrap;
+}
+
+.tools-grid-wrap {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+.tool-card {
+  background: var(--cream); padding: 28px 24px;
+  border-left: 3px solid transparent;
+  transition: border-color .25s, transform .25s, background .25s;
+}
+.tool-card:hover { border-color: var(--orange-dk); transform: translateX(4px); background: var(--light); }
+
+.tool-icon { font-size: 24px; margin-bottom: 12px; display: block; }
+.tool-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 600; color: var(--ink);
+  margin-bottom: 8px; line-height: 1.2;
+}
+.tool-desc { font-size: 13px; color: rgba(20,18,16,.55); line-height: 1.7; }
+
+/* ── ATENDIMENTOS ───────────────────────────────────────────── */
+#atendimentos { background: var(--ink-soft); }
+
+.atend-tabs {
+  display: flex; gap: 0; margin-bottom: 0; border-bottom: 1px solid rgba(245,240,232,.1);
+}
+.atend-tab {
+  padding: 16px 32px; font-size: 13px; font-weight: 500;
+  letter-spacing: .5px; color: var(--warm-gray);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  cursor: none; transition: color .2s, border-color .2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.atend-tab.active { color: var(--white); border-bottom-color: var(--orange); }
+.atend-tab:hover { color: var(--cream); }
+
+.atend-panels { position: relative; }
+.atend-panel { display: none; padding-top: 48px; }
+.atend-panel.active { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; }
+
+.atend-main-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 400; color: var(--white);
+  margin-bottom: 16px; line-height: 1.25;
+}
+.atend-main-desc {
+  font-size: 15px; font-weight: 300; color: rgba(245,240,232,.6);
+  line-height: 1.85; margin-bottom: 32px;
+}
+.atend-items { display: flex; flex-direction: column; gap: 0; }
+.atend-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 16px 0; border-bottom: 1px solid rgba(245,240,232,.06);
+}
+.atend-item:last-child { border-bottom: none; }
+.atend-item-num {
+  width: 28px; height: 28px; background: var(--orange-lt);
+  border: 1px solid rgba(244,121,32,.3);
+  border-radius: 2px; display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--orange);
+  flex-shrink: 0;
+}
+.atend-item-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+.atend-item-desc { font-size: 13px; color: rgba(245,240,232,.5); line-height: 1.6; }
+
+.poda-card {
+  background: var(--ink-mid); padding: 32px 28px;
+  border-top: 3px solid var(--orange);
+}
+.poda-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 600; color: var(--white);
+  margin-bottom: 6px;
+}
+.poda-card-sub { font-size: 12px; color: var(--warm-gray); margin-bottom: 24px; }
+.poda-principle { display: flex; gap: 14px; margin-bottom: 18px; }
+.poda-principle:last-child { margin-bottom: 0; }
+.pp-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--orange); flex-shrink: 0; margin-top: 6px;
+}
+.pp-title { font-size: 13px; font-weight: 600; color: var(--orange); margin-bottom: 3px; }
+.pp-desc { font-size: 12.5px; color: rgba(245,240,232,.5); line-height: 1.6; }
+
+/* ── PROCESSO ───────────────────────────────────────────────── */
+#processo { background: var(--ink); }
+
+.steps-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  border: 1px solid rgba(245,240,232,.08);
+}
+.step-item {
+  padding: 36px 28px;
+  border-right: 1px solid rgba(245,240,232,.08);
+  position: relative; transition: background .3s;
+}
+.step-item:last-child { border-right: none; }
+.step-item:hover { background: rgba(245,240,232,.03); }
+.step-item::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--orange);
+  transform: scaleX(0); transform-origin: left; transition: transform .4s;
+}
+.step-item:hover::before { transform: scaleX(1); }
+
+.step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px; font-weight: 300;
+  color: rgba(245,240,232,.1); line-height: 1; margin-bottom: 16px;
+}
+.step-title { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 10px; }
+.step-desc { font-size: 13px; color: rgba(245,240,232,.45); line-height: 1.75; }
+
+/* Tabela evolução */
+.evolucao-box {
+  margin-top: 56px;
+  border: 1px solid rgba(245,240,232,.08);
+}
+.evolucao-header {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  background: var(--ink-soft);
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(245,240,232,.08);
+}
+.evolucao-header span {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--warm-gray);
+}
+.evolucao-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  padding: 14px 24px; border-bottom: 1px solid rgba(245,240,232,.05);
+  align-items: center; transition: background .2s;
+}
+.evolucao-row:last-child { border-bottom: none; }
+.evolucao-row:hover { background: rgba(245,240,232,.03); }
+.e-area { font-size: 13.5px; font-weight: 500; color: var(--cream); }
+.e-antes { font-size: 12.5px; color: rgba(245,240,232,.4); }
+.e-depois { font-size: 12.5px; color: var(--orange); font-weight: 500; }
+
+/* ── DIFERENCIAIS ───────────────────────────────────────────── */
+#diferenciais { background: var(--ink-soft); }
+
+.diffs-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+}
+.diff-card {
+  background: var(--ink); padding: 36px 28px;
+  transition: background .3s;
+  position: relative; overflow: hidden;
+}
+.diff-card:hover { background: var(--ink-mid); }
+.diff-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  width: 3px; height: 0; background: var(--orange);
+  transition: height .4s ease;
+}
+.diff-card:hover::after { height: 100%; }
+
+.diff-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 44px; font-weight: 300;
+  color: rgba(244,121,32,.2); line-height: 1; margin-bottom: 14px;
+  transition: color .3s;
+}
+.diff-card:hover .diff-num { color: rgba(244,121,32,.45); }
+.diff-title { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 10px; }
+.diff-desc { font-size: 13px; color: rgba(245,240,232,.45); line-height: 1.75; }
+
+/* ── FORMAÇÃO ───────────────────────────────────────────────── */
+#formacao { background: var(--white); }
+#formacao .s-title { color: var(--ink); }
+#formacao .s-title em { color: var(--orange-dk); }
+#formacao .s-label { color: var(--orange-dk); }
+#formacao hr.accent { background: linear-gradient(90deg, var(--orange-dk), transparent); }
+
+.form-timeline {
+  display: flex; flex-direction: column; gap: 0;
+  border-left: 2px solid var(--light); padding-left: 36px; margin-left: 6px;
+}
+.form-item {
+  position: relative; padding-bottom: 32px;
+}
+.form-item:last-child { padding-bottom: 0; }
+.form-item::before {
+  content: ''; position: absolute;
+  left: -43px; top: 5px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--white); border: 2.5px solid var(--orange-dk);
+  box-shadow: 0 0 0 3px rgba(201,97,10,.15);
+  transition: transform .25s;
+}
+.form-item:hover::before { transform: scale(1.3); }
+
+.form-badge {
+  display: inline-block; font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 2px;
+  margin-bottom: 8px; font-weight: 500;
+}
+.form-badge.ok { background: rgba(244,121,32,.12); color: var(--orange-dk); }
+.form-badge.wip { background: rgba(20,18,16,.07); color: rgba(20,18,16,.5); }
+
+.form-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 600; color: var(--ink);
+  margin-bottom: 4px; line-height: 1.25;
+}
+.form-inst { font-size: 13px; color: rgba(20,18,16,.45); }
+
+/* ── QUOTE ──────────────────────────────────────────────────── */
+#quote-section {
+  background: var(--ink);
+  padding: 100px 6%;
+  position: relative; overflow: hidden;
+}
+#quote-section::before {
+  content: '\201C';
+  font-family: 'Cormorant Garamond', serif; font-size: 400px; font-weight: 600;
+  color: rgba(244,121,32,.05); position: absolute;
+  top: -80px; left: 4%; line-height: 1; pointer-events: none;
+}
+.quote-inner {
+  max-width: 800px; margin: 0 auto; text-align: center; position: relative; z-index: 1;
+}
+.quote-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(24px, 3.5vw, 38px); font-weight: 300; font-style: italic;
+  color: var(--white); line-height: 1.55; margin-bottom: 24px;
+}
+.quote-text strong { font-style: normal; font-weight: 600; color: var(--orange); }
+.quote-attr {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  letter-spacing: 2.5px; text-transform: uppercase; color: var(--warm-gray);
+}
+
+/* ── CTA ────────────────────────────────────────────────────── */
+#contato {
+  background: var(--ink-soft); padding: 100px 6%;
+}
+.cta-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 5vw, 58px); font-weight: 400;
+  color: var(--white); line-height: 1.1; letter-spacing: -.5px; margin-bottom: 16px;
+}
+.cta-title em { font-style: italic; color: var(--orange); }
+.cta-sub {
+  font-size: 15px; font-weight: 300; color: rgba(245,240,232,.55);
+  line-height: 1.85;
+}
+.cta-contacts {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.cta-contact-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 24px; background: var(--ink-mid);
+  text-decoration: none; transition: background .2s, border-color .2s;
+  border: 1px solid rgba(245,240,232,.07);
+  border-left: 3px solid transparent;
+}
+.cta-contact-item:hover {
+  background: var(--ink); border-left-color: var(--orange);
+}
+.cta-icon {
+  width: 40px; height: 40px; background: var(--orange-lt);
+  border: 1px solid rgba(244,121,32,.25); border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.cta-contact-label {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--warm-gray); margin-bottom: 3px;
+}
+.cta-contact-value { font-size: 15px; font-weight: 500; color: var(--white); }
+
+/* ── Footer ─────────────────────────────────────────────────── */
+footer {
+  background: var(--ink); padding: 28px 6%;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(245,240,232,.06);
+}
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; font-weight: 600; color: var(--white);
+}
+.footer-brand span { color: var(--orange); }
+.footer-copy { font-size: 11.5px; color: var(--warm-gray); }
+
+/* ── Reveal ─────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+
+/* ── Animations ─────────────────────────────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Responsive :: Tablet ────────────────────────────────────── */
+@media (max-width: 900px) {
+  section { padding: 72px 5%; }
+  .sobre-grid, .cta-inner { grid-template-columns: 1fr; gap: 40px; }
+  .atend-panel.active { grid-template-columns: 1fr; gap: 36px; }
+  .fases-track { grid-template-columns: 1fr 1fr 1fr; }
+  .tools-grid-wrap, .diffs-grid { grid-template-columns: 1fr 1fr; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .proposta-cards { grid-template-columns: 1fr; }
+  .abertura-stats { grid-template-columns: 1fr 1fr; }
+  .evolucao-header, .evolucao-row { grid-template-columns: 1.5fr 1fr 1fr; }
+}
+
+/* ── Responsive :: Mobile ────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* Nav */
+  nav { padding: 16px 5%; }
+  nav.scrolled { padding: 12px 5%; }
+  .nav-links { display: none; }
+  .nav-logo { font-size: 16px; }
+
+  /* Cursor off on touch */
+  .cursor, .cursor-ring { display: none; }
+  body { cursor: auto; }
+  .btn-main, .btn-ghost, .atend-tab { cursor: pointer; }
+
+  /* Abertura */
+  #abertura { padding: 100px 5% 0; min-height: auto; }
+  .abertura-inner { padding-bottom: 32px; }
+  .abertura-headline { font-size: 42px; letter-spacing: -1px; }
+  .abertura-desc { font-size: 15px; margin-top: 20px; margin-bottom: 0; }
+  .abertura-cta {
+    flex-direction: column; gap: 12px;
+    margin-top: 32px; margin-bottom: 0;
+  }
+  .btn-main, .btn-ghost {
+    width: 100%; justify-content: center;
+    padding: 16px 20px; font-size: 14px;
+  }
+  .abertura-stats {
+    grid-template-columns: 1fr 1fr;
+    margin-top: 40px; position: relative;
+  }
+  .a-stat { padding: 18px 5%; }
+  .a-stat-num { font-size: 26px; }
+  .a-stat-label { font-size: 10px; }
+
+  /* Sections */
+  section { padding: 60px 5%; }
+  .s-title { font-size: 30px; margin-bottom: 28px; }
+  .s-label { font-size: 9.5px; }
+
+  /* Sobre */
+  .sobre-grid { gap: 32px; }
+  .sobre-nome { font-size: 36px; }
+  .filosofia-list li { font-size: 13.5px; }
+
+  /* Proposta */
+  .proposta-intro { font-size: 15px; margin-bottom: 32px; }
+  .p-card { padding: 28px 22px; }
+  .diferencial-box { padding: 24px 22px; }
+  .diferencial-box p { font-size: 15px; }
+
+  /* Método */
+  .fases-track { grid-template-columns: 1fr; gap: 2px; }
+  .fase-item { text-align: left; padding: 18px 20px; }
+  .fase-num { font-size: 24px; display: inline; margin-right: 8px; }
+  .fase-name { display: inline; font-size: 11px; }
+  .fase-desc { font-size: 12px; margin-top: 6px; display: block; }
+  .tools-grid-wrap { grid-template-columns: 1fr; gap: 2px; }
+  .tool-card { padding: 22px 18px; }
+
+  /* Atendimentos */
+  .atend-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .atend-tab { padding: 14px 20px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+  .atend-panel.active { grid-template-columns: 1fr; gap: 28px; }
+  .atend-main-title { font-size: 22px; }
+  .atend-main-desc { font-size: 14px; }
+  .poda-card { padding: 24px 20px; }
+
+  /* Processo */
+  .steps-grid { grid-template-columns: 1fr; }
+  .step-item { border-right: none; border-bottom: 1px solid rgba(245,240,232,.08); padding: 28px 20px; }
+  .step-item:last-child { border-bottom: none; }
+  .step-num { font-size: 36px; margin-bottom: 10px; }
+  .evolucao-box { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .evolucao-header, .evolucao-row { grid-template-columns: 1.4fr .9fr .9fr; padding: 12px 14px; }
+  .e-area { font-size: 12px; }
+  .e-antes, .e-depois { font-size: 11px; }
+
+  /* Diferenciais */
+  .diffs-grid { grid-template-columns: 1fr; }
+  .diff-card { padding: 28px 22px; }
+  .diff-num { font-size: 32px; margin-bottom: 10px; }
+
+  /* Formação */
+  .form-timeline { padding-left: 24px; margin-left: 4px; }
+  .form-item::before { left: -31px; }
+  .form-title { font-size: 17px; }
+
+  /* Quote */
+  #quote-section { padding: 72px 5%; }
+  .quote-text { font-size: 22px; }
+
+  /* CTA */
+  #contato { padding: 60px 5%; }
+  .cta-inner { gap: 40px; }
+  .cta-title { font-size: 32px; }
+  .cta-contact-item { padding: 16px 18px; }
+  .cta-contact-value { font-size: 14px; }
+
+  /* Footer */
+  footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 5%; }
+}
+
+/* ── Hamburger + Mobile Menu ────────────────────────────────── */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px; z-index: 200;
+}
+.hamburger span {
+  display: block; width: 24px; height: 2px;
+  background: var(--cream); border-radius: 2px;
+  transition: all .3s ease;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  display: none; position: fixed; inset: 0; z-index: 99;
+  background: rgba(20,18,16,.97);
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 32px;
+  opacity: 0; transition: opacity .3s;
+}
+.mobile-menu.open { opacity: 1; }
+.mobile-menu a {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 32px; font-weight: 400; color: var(--white);
+  text-decoration: none; letter-spacing: .5px;
+  transition: color .2s;
+}
+.mobile-menu a:hover { color: var(--orange); }
+
+@media (max-width: 600px) {
+  .hamburger { display: flex; }
+  .mobile-menu { display: flex; pointer-events: none; }
+  .mobile-menu.open { pointer-events: all; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- Nav -->
+<nav id="navbar">
+  <a href="#abertura" class="nav-logo">Artur<span>.</span>Neto</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#proposta">Proposta</a></li>
+    <li><a href="#metodo">Método</a></li>
+    <li><a href="#atendimentos">Atendimentos</a></li>
+    <li><a href="#diferenciais">Diferenciais</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sobre" onclick="closeMobile()">Sobre</a>
+  <a href="#proposta" onclick="closeMobile()">Proposta</a>
+  <a href="#metodo" onclick="closeMobile()">Método</a>
+  <a href="#atendimentos" onclick="closeMobile()">Atendimentos</a>
+  <a href="#diferenciais" onclick="closeMobile()">Diferenciais</a>
+  <a href="#contato" onclick="closeMobile()">Contato</a>
+</div>
+
+<!-- ══ ABERTURA ══════════════════════════════════════════════════ -->
+<section id="abertura">
+  <div class="abertura-inner">
+    <p class="abertura-pergunta">Mentoria Comportamental para Adolescentes</p>
+    <h1 class="abertura-headline">
+      <span class="line1">Uma ponte entre</span>
+      <span class="line2">pais e filhos.</span>
+      <span class="line3">Um norte para quem está perdido.</span>
+    </h1>
+    <p class="abertura-desc">
+      Quando o adolescente não sabe quem é, para onde vai ou por que as coisas não funcionam
+      e os pais já não sabem como chegar perto existe um caminho.
+      Estruturado, técnico e profundamente humano.
+    </p>
+    <div class="abertura-cta">
+      <a href="#proposta" class="btn-main">Conhecer o trabalho →</a>
+      <a href="#contato" class="btn-ghost">Falar com Artur</a>
+    </div>
+  </div>
+  <div class="abertura-stats">
+    <div class="a-stat">
+      <div class="a-stat-num">5</div>
+      <div class="a-stat-label">Fases do<br>Método</div>
+    </div>
+    <div class="a-stat">
+      <div class="a-stat-num">3+</div>
+      <div class="a-stat-label">Pós-graduações<br>em Neurociência</div>
+    </div>
+    <div class="a-stat">
+      <div class="a-stat-num">10+</div>
+      <div class="a-stat-label">Anos em<br>Educação</div>
+    </div>
+    <div class="a-stat">
+      <div class="a-stat-num">100%</div>
+      <div class="a-stat-label">Relatórios<br>Individualizados</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOBRE ═════════════════════════════════════════════════════ -->
+<section id="sobre">
+  <div class="reveal">
+    <p class="s-label">Quem é Artur Neto</p>
+    <h2 class="s-title">Educação, neurociência<br>e <em>presença humana</em>.</h2>
+    <hr class="accent">
+  </div>
+  <div class="sobre-grid">
+    <div class="sobre-text reveal">
+      <p>
+        <strong>Artur Neto</strong> é mentor comportamental e consultor em educação socioemocional,
+        com especialização em Neuropsicologia e Psicologia do Desenvolvimento.
+        Seu trabalho nasce de uma convicção simples e profunda: adolescentes não
+        precisam ser consertados precisam ser compreendidos, desafiados
+        e acompanhados com método.
+      </p>
+      <p>
+        Com mais de 10 anos em educação, Artur passou metade da vida dentro de sala de aula. Seu primeiro emprego foi aos 16 anos, como professor. Hoje, como mentor e pai, ele sabe o que é olhar para um adolescente e entender o que está por trás do comportamento que ninguém mais consegue decifrar.
+      </p>
+      <p>
+        Seu estilo é <strong>acolhedor e direto</strong>. Firme e humano.
+        Cria espaços onde adolescentes se sentem seguros para se abrir
+        e ao mesmo tempo percebem que ali não há espaço para se esconder
+        atrás de respostas prontas.
+      </p>
+    </div>
+    <div class="reveal reveal-delay-2">
+      <div class="sobre-nome">Artur<br>Neto</div>
+      <div class="sobre-cargo">Mentor · Consultor · Educador</div>
+      <ul class="filosofia-list">
+        <li><span class="fi-arrow">→</span> Mudança genuína vem de dentro, não de pressão externa</li>
+        <li><span class="fi-arrow">→</span> O vínculo é a ferramenta mais poderosa de qualquer processo</li>
+        <li><span class="fi-arrow">→</span> Pais alinhados multiplicam o resultado da mentoria</li>
+        <li><span class="fi-arrow">→</span> Consciência sem ação é estagnação o método vai além do insight</li>
+        <li><span class="fi-arrow">→</span> Cada adolescente é único: diagnóstico antes de qualquer técnica</li>
+        <li><span class="fi-arrow">→</span> Transparência total: relatórios reais, não relatórios bonitos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROPOSTA ══════════════════════════════════════════════════ -->
+<section id="proposta">
+  <div class="reveal">
+    <p class="s-label">A proposta do trabalho</p>
+    <h2 class="s-title">Dois caminhos,<br>uma <em>transformação integrada</em>.</h2>
+    <hr class="accent">
+  </div>
+  <p class="proposta-intro reveal">
+    O trabalho da Mentoria Norte existe para construir e fortalecer a ponte entre
+    pais e filhos adolescentes. De um lado, o adolescente recebe acompanhamento
+    individual para <strong>descobrir quem é, onde está, o que não quer repetir
+    e para onde quer ir</strong>. Do outro, os pais recebem orientação precisa
+    para sustentar esse processo em casa, com firmeza e afeto.
+  </p>
+  <div class="proposta-cards reveal">
+    <div class="p-card">
+      <span class="p-card-icon">🧭</span>
+      <h3 class="p-card-title">Para o Adolescente</h3>
+      <p class="p-card-desc">Um processo para que o jovem encontre direção interna entendendo quem é, reconhecendo padrões que o limitam e construindo uma visão de quem quer se tornar.</p>
+      <ul class="p-card-list">
+        <li>Quem eu sou identidade e autoconhecimento</li>
+        <li>Onde estou consciência honesta do momento atual</li>
+        <li>Para onde não quero voltar padrões a romper</li>
+        <li>O que quero propósito e direção com clareza</li>
+        <li>Quem quero ser construção de identidade futura</li>
+      </ul>
+    </div>
+    <div class="p-card">
+      <span class="p-card-icon">🏠</span>
+      <h3 class="p-card-title">Para os Pais</h3>
+      <p class="p-card-desc">Consultoria para que os pais se tornem parceiros ativos do processo com clareza sobre o que está acontecendo e ferramentas práticas para agir em casa.</p>
+      <ul class="p-card-list">
+        <li>Leitura técnica dos episódios e conflitos da semana</li>
+        <li>Como aplicar limites sem perder o vínculo</li>
+        <li>Reconexão após conflito o que o silêncio ensina</li>
+        <li>Relatórios detalhados a cada ciclo do processo</li>
+        <li>Alinhamento total com o que é trabalhado na mentoria</li>
+      </ul>
+    </div>
+  </div>
+  <div class="diferencial-box reveal">
+    <p>A maioria das abordagens trabalha com o adolescente <em>ou</em> com os pais.<br>
+    A Mentoria Norte trabalha com os dois integrados, alinhados, caminhando juntos.<br>
+    O resultado se instala na vida, não apenas na sessão.</p>
+  </div>
+</section>
+
+<!-- ══ MÉTODO ════════════════════════════════════════════════════ -->
+<section id="metodo">
+  <div class="reveal">
+    <p class="s-label">A base do trabalho</p>
+    <h2 class="s-title">Mentoria Norte<br>um <em>método</em>, não um bate-papo.</h2>
+    <hr class="accent">
+  </div>
+  <div class="fases-track reveal">
+    <div class="fase-item">
+      <div class="fase-num">1</div>
+      <div class="fase-name">Resistência</div>
+      <div class="fase-desc">O adolescente ainda não reconhece o problema. O vínculo é o trabalho.</div>
+    </div>
+    <div class="fase-item">
+      <div class="fase-num">2</div>
+      <div class="fase-name">Consciência</div>
+      <div class="fase-desc">Ele começa a se ver. Nomeia padrões. A consciência precede a mudança.</div>
+    </div>
+    <div class="fase-item ativa">
+      <div class="fase-badge">Fase central</div>
+      <div class="fase-num">3</div>
+      <div class="fase-name">Responsabilidade</div>
+      <div class="fase-desc">Consciência encontra ação. A fase mais difícil e mais decisiva.</div>
+    </div>
+    <div class="fase-item">
+      <div class="fase-num">4</div>
+      <div class="fase-name">Mudança</div>
+      <div class="fase-desc">Atitudes consistentes. O comportamento muda de dentro para fora.</div>
+    </div>
+    <div class="fase-item">
+      <div class="fase-num">5</div>
+      <div class="fase-name">Domínio</div>
+      <div class="fase-desc">O jovem opera com autonomia. A mudança virou identidade.</div>
+    </div>
+  </div>
+
+  <p class="s-label reveal" style="margin-bottom:20px">Ferramentas exclusivas do método</p>
+  <div class="tools-grid-wrap reveal">
+    <div class="tool-card">
+      <span class="tool-icon">🗺️</span>
+      <h3 class="tool-name">Mapa de Territórios</h3>
+      <p class="tool-desc">Sistema visual em formato de jornada que situa o adolescente na sua fase atual, tornando o progresso tangível e motivador.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">📓</span>
+      <h3 class="tool-name">Diário de Responsabilidade</h3>
+      <p class="tool-desc">Registro diário com foco único e concreto, revisado a cada sessão. Transforma intenção em hábito real.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">🪞</span>
+      <h3 class="tool-name">Técnica dos Dois Eu</h3>
+      <p class="tool-desc">O jovem contrasta quem é hoje com quem quer ser gerando autoconsciência real e desejo de mudança de dentro para fora.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">👥</span>
+      <h3 class="tool-name">Mapa das 5 Pessoas</h3>
+      <p class="tool-desc">Revela quais vínculos moldam a identidade do adolescente e como ele se constitui em espelho com as pessoas ao redor.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">✉️</span>
+      <h3 class="tool-name">Carta do Eu do Passado</h3>
+      <p class="tool-desc">Exercício de integração emocional profunda que revela feridas ainda ativas e abre caminho para o autoperdão.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">📊</span>
+      <h3 class="tool-name">Termômetro de Evolução</h3>
+      <p class="tool-desc">Painel com indicadores de progresso em consciência, responsabilidade, vínculo familiar e identidade interna.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">🧬</span>
+      <h3 class="tool-name">PNL e Master PNL</h3>
+      <p class="tool-desc">Ferramentas de Programação Neurolinguística aplicadas à reconfiguração de padrões, comunicação e ancoragem de novos comportamentos.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">🌀</span>
+      <h3 class="tool-name">Terapia do Renascimento</h3>
+      <p class="tool-desc">Técnica de integração emocional profunda utilizada para ressignificação de experiências e libertação de padrões inconscientes.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">⚙️</span>
+      <h3 class="tool-name">Análise Comportamental</h3>
+      <p class="tool-desc">Leitura técnica de perfis e padrões de comportamento que orienta a estratégia de cada processo de mentoria.</p>
+    </div>
+    <div class="tool-card">
+      <span class="tool-icon">🔵</span>
+      <h3 class="tool-name">Roda de Cura</h3>
+      <p class="tool-desc">Ferramenta de autoconhecimento e mapeamento emocional que revela desequilíbrios e abre caminhos para integração e equilíbrio interno.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ATENDIMENTOS ══════════════════════════════════════════════ -->
+<section id="atendimentos">
+  <div class="reveal">
+    <p class="s-label">O que é oferecido</p>
+    <h2 class="s-title">Atendimentos<br><em>estruturados</em> e integrados.</h2>
+    <hr class="accent">
+  </div>
+  <div class="atend-tabs reveal">
+    <button class="atend-tab active" onclick="switchTab(0)">Para o Adolescente</button>
+    <button class="atend-tab" onclick="switchTab(1)">Para os Pais</button>
+  </div>
+  <div class="atend-panels">
+    <div class="atend-panel active" id="panel-0">
+      <div>
+        <h3 class="atend-main-title">Mentoria Comportamental Individual</h3>
+        <p class="atend-main-desc">Processo individual e estruturado para jovens entre 12 e 18 anos, com foco em comportamento, identidade e responsabilidade. Cada sessão tem objetivo técnico claro, ferramenta aplicada e registro documentado.</p>
+        <div class="atend-items">
+          <div class="atend-item">
+            <div class="atend-item-num">01</div>
+            <div><div class="atend-item-title">Diagnóstico comportamental completo</div><div class="atend-item-desc">Mapeamento aprofundado do caso na sessão inicial padrões, contexto familiar, hipóteses.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">02</div>
+            <div><div class="atend-item-title">Processo por fases com ferramentas exclusivas</div><div class="atend-item-desc">Cada fase tem objetivos, marcos e instrumentos desenvolvidos especificamente para esse contexto.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">03</div>
+            <div><div class="atend-item-title">Trabalho com identidade e propósito</div><div class="atend-item-desc">Quem ele é, para onde não quer voltar e quem quer se tornar respondido em ação, não em palavras.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">04</div>
+            <div><div class="atend-item-title">Nota técnica após cada sessão</div><div class="atend-item-desc">Registro do mentor com análise, estratégia da próxima sessão e tarefa para a semana.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">05</div>
+            <div><div class="atend-item-title">Responsabilidade real</div><div class="atend-item-desc">Não apenas conversa sobre responsabilidade ferramentas concretas que a instalam no dia a dia.</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="poda-card">
+          <div class="poda-card-title">Exemplo de evolução acompanhada</div>
+          <div class="poda-card-sub">Áreas trabalhadas ao longo do processo</div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Consciência emocional</div><div class="pp-desc">De reativa e não nomeada para reconhecida e gerenciada com ferramentas próprias.</div></div>
+          </div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Responsabilidade</div><div class="pp-desc">De evitada por narrativas elaboradas para assumida com consistência e ação real.</div></div>
+          </div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Identidade pessoal</div><div class="pp-desc">De indefinida e dependente da opinião dos outros para em construção autônoma.</div></div>
+          </div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Comunicação com os pais</div><div class="pp-desc">De conflituosa e fechada para direta, com vínculo e respeito mútuo.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="atend-panel" id="panel-1">
+      <div>
+        <h3 class="atend-main-title">Consultoria Dedicada aos Pais</h3>
+        <p class="atend-main-desc">Sessões exclusivas para os pais com leitura técnica do que está acontecendo em casa, orientação precisa sobre como agir e alinhamento contínuo com o processo do filho.</p>
+        <div class="atend-items">
+          <div class="atend-item">
+            <div class="atend-item-num">01</div>
+            <div><div class="atend-item-title">Abertura e reconhecimento</div><div class="atend-item-desc">Valorizando o engajamento. Baixando a defensividade e abrindo escuta real.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">02</div>
+            <div><div class="atend-item-title">Evolução do adolescente</div><div class="atend-item-desc">Apresentação dos avanços concretos o episódio da semana não apaga o progresso.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">03</div>
+            <div><div class="atend-item-title">Leitura técnica da semana</div><div class="atend-item-desc">O que aconteceu, por que aconteceu e o que o sistema familiar precisa ajustar.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">04</div>
+            <div><div class="atend-item-title">Combinados e consequências</div><div class="atend-item-desc">Revisão dos limites acordados. Formato de combinado que realmente funciona.</div></div>
+          </div>
+          <div class="atend-item">
+            <div class="atend-item-num">05</div>
+            <div><div class="atend-item-title">Plano da semana</div><div class="atend-item-desc">Três ações concretas para os pais aplicarem em casa simples, claras e com propósito.</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="poda-card">
+          <div class="poda-card-title">Os 3 Princípios da Poda</div>
+          <div class="poda-card-sub">A consequência que educa não que pune</div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Previsível</div><div class="pp-desc">Combinada antes, não improvisada na raiva. O filho sabe o que esperar isso gera segurança, não liberdade.</div></div>
+          </div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Proporcional</div><div class="pp-desc">Não pode ser maior do que o comportamento senão vira punição e perde o efeito educativo.</div></div>
+          </div>
+          <div class="poda-principle">
+            <div class="pp-dot"></div>
+            <div><div class="pp-title">Consistente</div><div class="pp-desc">Precisa acontecer sempre. Uma vez que cede sem motivo real, o limite desaparece.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROCESSO ══════════════════════════════════════════════════ -->
+<section id="processo">
+  <div class="reveal">
+    <p class="s-label">Como funciona na prática</p>
+    <h2 class="s-title">Do primeiro contato<br>à <em>mudança real</em>.</h2>
+    <hr class="accent">
+  </div>
+  <div class="steps-grid reveal">
+    <div class="step-item">
+      <div class="step-num">01</div>
+      <div class="step-title">Sessão de Diagnóstico</div>
+      <div class="step-desc">Mapeamento completo do caso: quem é o adolescente, quais os padrões de comportamento, contexto familiar e hipóteses técnicas iniciais. Pais e filho, separadamente.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">02</div>
+      <div class="step-title">Plano de Processo</div>
+      <div class="step-desc">Estratégia personalizada com fases, ferramentas e objetivos por sessão. Os pais recebem o plano e entendem seu papel em cada etapa.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">03</div>
+      <div class="step-title">Sessões com Relatório</div>
+      <div class="step-desc">Cada sessão com o adolescente gera registro técnico. A cada ciclo, os pais recebem atualização detalhada e orientação específica.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">04</div>
+      <div class="step-title">Acompanhamento Contínuo</div>
+      <div class="step-desc">O processo não termina quando a sessão acaba. Tarefas, monitoramento de metas e alinhamento com o que acontece em casa e na escola.</div>
+    </div>
+  </div>
+
+  <div class="evolucao-box reveal">
+    <div class="evolucao-header">
+      <span>Área de acompanhamento</span>
+      <span>Fase inicial</span>
+      <span>Após o processo</span>
+    </div>
+    <div class="evolucao-row">
+      <div class="e-area">Consciência emocional</div>
+      <div class="e-antes">Baixa / reativa</div>
+      <div class="e-depois">Alta / nomeada →</div>
+    </div>
+    <div class="evolucao-row">
+      <div class="e-area">Responsabilidade</div>
+      <div class="e-antes">Evitada / negada</div>
+      <div class="e-depois">Assumida com consistência →</div>
+    </div>
+    <div class="evolucao-row">
+      <div class="e-area">Comunicação com os pais</div>
+      <div class="e-antes">Conflituosa / fechada</div>
+      <div class="e-depois">Direta e com vínculo →</div>
+    </div>
+    <div class="evolucao-row">
+      <div class="e-area">Identidade pessoal</div>
+      <div class="e-antes">Indefinida / dependente</div>
+      <div class="e-depois">Em construção autônoma →</div>
+    </div>
+    <div class="evolucao-row">
+      <div class="e-area">Gestão de limites</div>
+      <div class="e-antes">Testados / negociados</div>
+      <div class="e-depois">Respeitados e internalizados →</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ DIFERENCIAIS ══════════════════════════════════════════════ -->
+<section id="diferenciais">
+  <div class="reveal">
+    <p class="s-label">Por que escolher este trabalho</p>
+    <h2 class="s-title">O que torna a Mentoria Norte<br>um trabalho <em>diferente</em>.</h2>
+    <hr class="accent">
+  </div>
+  <div class="diffs-grid reveal">
+    <div class="diff-card">
+      <div class="diff-num">01</div>
+      <div class="diff-title">Neurociência na prática</div>
+      <div class="diff-desc">Conhecimento técnico em neuropsicologia aplicado ao contexto adolescente não como teoria, mas como lente para ler comportamento e traçar estratégia.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">02</div>
+      <div class="diff-title">Dois processos integrados</div>
+      <div class="diff-desc">A maioria trabalha com o adolescente ou com os pais. Aqui, os dois caminham juntos com comunicação estruturada e alinhamento contínuo entre as frentes.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">03</div>
+      <div class="diff-title">Ferramentas exclusivas</div>
+      <div class="diff-desc">Instrumentos desenvolvidos especificamente para o contexto da mentoria adolescente não técnicas genéricas adaptadas, mas ferramentas construídas para esse fim.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">04</div>
+      <div class="diff-title">Relatórios reais para os pais</div>
+      <div class="diff-desc">Os pais não ficam no escuro. A cada ciclo, recebem documentação técnica com leitura honesta, pontos de atenção e orientações práticas para a semana.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">05</div>
+      <div class="diff-title">Vínculo como ferramenta</div>
+      <div class="diff-desc">Sem vínculo real, não há abertura e sem abertura, não há processo. A relação com o adolescente é construída com cuidado técnico em cada sessão.</div>
+    </div>
+    <div class="diff-card">
+      <div class="diff-num">06</div>
+      <div class="diff-title">Experiência real com adolescentes</div>
+      <div class="diff-desc">Mais de 10 anos em educação. Primeiro emprego aos 16 anos como professor. Pai de adolescente. Formação em neuropsicologia e psicologia do desenvolvimento. Experiência vivida, não só estudada.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FORMAÇÃO ═══════════════════════════════════════════════════ -->
+<section id="formacao">
+  <div class="reveal">
+    <p class="s-label">Formação acadêmica</p>
+    <h2 class="s-title">A ciência por trás<br>de cada <em>sessão</em>.</h2>
+    <hr class="accent">
+  </div>
+  <div class="form-timeline reveal">
+    <div class="form-item">
+      <span class="form-badge ok">Concluída · 2026</span>
+      <div class="form-title">Especialização em Neurociência e Gestão de Pessoas</div>
+      <div class="form-inst">Pós-Graduação Lato Sensu · Faculdade Líbano</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Concluída · Fev/2026</span>
+      <div class="form-title">Especialização em Psicologia do Desenvolvimento e da Aprendizagem</div>
+      <div class="form-inst">Pós-Graduação Lato Sensu · 720h · Faculdade Líbano</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Concluída · Jan/2026</span>
+      <div class="form-title">Especialização em Neuropsicologia</div>
+      <div class="form-inst">Pós-Graduação Lato Sensu · 720h · Faculdade Líbano</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Concluída · 2024</span>
+      <div class="form-title">Formação Escola da Inteligência Augusto Cury</div>
+      <div class="form-inst">Comunicação & Relação Escola Família · 48h</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Experiência</span>
+      <div class="form-title">Coordenação Pedagógica 3 anos de gestão</div>
+      <div class="form-inst">Colégio Luiz Junior · 15 professores · 200+ alunos</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Graduação</span>
+      <div class="form-title">Direito UNIP · Universidade Paulista</div>
+      <div class="form-inst">Base em argumentação, leitura de comportamento e ética</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Certificação</span>
+      <div class="form-title">PNL e Master PNL</div>
+      <div class="form-inst">Programação Neurolinguística · Certificação formal com aplicação prática nas sessões de mentoria</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Formação</span>
+      <div class="form-title">Terapia do Renascimento</div>
+      <div class="form-inst">Técnica de integração emocional e ressignificação de experiências</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Certificação</span>
+      <div class="form-title">Análise Comportamental</div>
+      <div class="form-inst">Leitura técnica de perfis e padrões para aplicação estratégica na mentoria</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Prática</span>
+      <div class="form-title">Roda de Cura</div>
+      <div class="form-inst">Ferramenta de mapeamento emocional e autoconhecimento aplicada em sessões e palestras</div>
+    </div>
+    <div class="form-item">
+      <span class="form-badge ok">Atuação</span>
+      <div class="form-title">Palestras em Educação Socioemocional</div>
+      <div class="form-inst">Comunicação, inteligência emocional, ansiedade na adolescência, relação escola e família</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ QUOTE ══════════════════════════════════════════════════════ -->
+<section id="quote-section">
+  <div class="quote-inner reveal">
+    <p class="quote-text">
+      "Um adolescente que se conhece<br>
+      não precisa que ninguém o salve.<br>
+      Precisa que alguém <strong>acredite</strong><br>
+      enquanto ele ainda não consegue."
+    </p>
+    <p class="quote-attr">Artur Neto · Mentoria Norte</p>
+  </div>
+</section>
+
+<!-- ══ CTA ════════════════════════════════════════════════════════ -->
+<section id="contato">
+  <div class="cta-inner">
+    <div class="reveal">
+      <h2 class="cta-title">Pronto para<br>iniciar o <em>processo</em>?</h2>
+      <p class="cta-sub">Entre em contato para uma conversa inicial sem compromisso. Vamos entender o caso e verificar se faz sentido trabalhar juntos.</p>
+    </div>
+    <div class="cta-contacts reveal reveal-delay-2">
+      <a href="tel:+5513988141073" class="cta-contact-item">
+        <div class="cta-icon">📞</div>
+        <div>
+          <div class="cta-contact-label">Telefone / WhatsApp</div>
+          <div class="cta-contact-value">(13) 98814-1073</div>
+        </div>
+      </a>
+      <a href="mailto:arturmarquesneto@gmail.com" class="cta-contact-item">
+        <div class="cta-icon">✉️</div>
+        <div>
+          <div class="cta-contact-label">E-mail</div>
+          <div class="cta-contact-value">arturmarquesneto@gmail.com</div>
+        </div>
+      </a>
+      <div class="cta-contact-item" style="cursor:default">
+        <div class="cta-icon">📍</div>
+        <div>
+          <div class="cta-contact-label">Localização</div>
+          <div class="cta-contact-value">Santos SP · Presencial e Online</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand">Artur<span>.</span>Neto · Mentoria Norte</div>
+  <div class="footer-copy">© 2026 · Mentoria Comportamental para Adolescentes · Santos, SP</div>
+</footer>
+
+<script>
+// ── Cursor ──────────────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+  ring.style.left   = e.clientX + 'px';
+  ring.style.top    = e.clientY + 'px';
+});
+document.querySelectorAll('a, button, .diff-card, .tool-card, .fase-item, .p-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '18px'; cursor.style.height = '18px';
+    ring.style.width   = '52px'; ring.style.height = '52px';
+    ring.style.borderColor = 'rgba(244,121,32,.7)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '10px'; cursor.style.height = '10px';
+    ring.style.width   = '36px'; ring.style.height = '36px';
+    ring.style.borderColor = 'rgba(244,121,32,.4)';
+  });
+});
+
+// ── Navbar scroll ───────────────────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ── Reveal on scroll ────────────────────────────────────────
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+reveals.forEach(el => obs.observe(el));
+
+// ── Tabs ────────────────────────────────────────────────────
+function switchTab(idx) {
+  document.querySelectorAll('.atend-tab').forEach((t,i) => t.classList.toggle('active', i === idx));
+  document.querySelectorAll('.atend-panel').forEach((p,i) => p.classList.toggle('active', i === idx));
+}
+
+// ── Smooth numbers counter ──────────────────────────────────
+const counters = document.querySelectorAll('.a-stat-num');
+const countObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const raw = el.textContent;
+    const num = parseFloat(raw);
+    const suffix = raw.replace(num.toString(), '');
+    if (isNaN(num)) return;
+    let start = 0; const dur = 1200;
+    const step = ts => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = (num < 10 ? (ease * num).toFixed(0) : Math.round(ease * num)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    countObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => countObs.observe(c));
+
+// ── Hamburger menu ──────────────────────────────────────────
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobile() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>
+</body>
+</html>
